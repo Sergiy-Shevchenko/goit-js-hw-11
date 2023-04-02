@@ -14,7 +14,55 @@ const gallaryListEl = document.querySelector('.gallery');
 
 const jsonplaceholderApi = new JSONPlaceholderAPI();
 
-const handleSearchFormSubmit = (event) => {
+// const handleSearchFormSubmit = (event) => {
+//     event.preventDefault();
+
+//     if (searchInputEl.value === '') {
+//         return;
+//     }
+       
+//     jsonplaceholderApi.query =searchInputEl.value.trim();
+//     jsonplaceholderApi
+//     .fetchGallary()
+//     .then((data) => {
+//         console.log(data);
+
+//         if (data.totalHits === 0) {
+//             Notify.warning('Sorry, there are no images matching your search query. Please try again.')
+//         }
+        
+//         gallaryListEl.innerHTML = createGallaryCards(data.hits);
+
+//         if (data.totalHits === jsonplaceholderApi.page || data.totalHits === 0) {
+//             loadMoreBtnEl.classList.add('is-hidden');
+//             return;
+//         }
+
+//         loadMoreBtnEl.classList.remove('is-hidden');
+
+//         searchInputEl.value ='';
+//     })
+//     .catch(err => {
+//         console.log(err);
+//     })
+// };
+
+// const handleLoadMoreBtnClick = () => {
+//     jsonplaceholderApi.page += 1
+
+//     jsonplaceholderApi.fetchGallary().then(data => {
+//         console.log(data);
+
+//         gallaryListEl.insertAdjacentHTML('beforeend', createGallaryCards(data.hits))
+//     })
+//     .catch(err => {
+//         console.warn(err);
+//     })
+// }
+
+
+//------------------axios--------------------------
+const handleSearchFormSubmit = async event => {
     event.preventDefault();
 
     if (searchInputEl.value === '') {
@@ -22,16 +70,16 @@ const handleSearchFormSubmit = (event) => {
     }
        
     jsonplaceholderApi.query =searchInputEl.value.trim();
-    jsonplaceholderApi
+    
+
+    try {
+       const { data } = await   jsonplaceholderApi
     .fetchGallary()
-    .then((data) => {
-        console.log(data);
 
         if (data.totalHits === 0) {
             Notify.warning('Sorry, there are no images matching your search query. Please try again.')
         }
-        
-        gallaryListEl.innerHTML = createGallaryCards(data.hits);
+            gallaryListEl.innerHTML = createGallaryCards(data.hits);
 
         if (data.totalHits === jsonplaceholderApi.page || data.totalHits === 0) {
             loadMoreBtnEl.classList.add('is-hidden');
@@ -41,24 +89,25 @@ const handleSearchFormSubmit = (event) => {
         loadMoreBtnEl.classList.remove('is-hidden');
 
         searchInputEl.value ='';
-    })
-    .catch(err => {
+
+    } catch (err)  {
         console.log(err);
-    })
+    }
 };
 
-const handleLoadMoreBtnClick = () => {
+const handleLoadMoreBtnClick = async () => {
     jsonplaceholderApi.page += 1
 
-    jsonplaceholderApi.fetchGallary().then(data => {
-        console.log(data);
-
+    try {
+        const { data } = jsonplaceholderApi.fetchGallary()
         gallaryListEl.insertAdjacentHTML('beforeend', createGallaryCards(data.hits))
-    })
-    .catch(err => {
-        console.warn(err);
-    })
+
+    } catch (err)  {
+        console.log(err);    
+    }
 }
+
+//-----------------------------addEventListener-------------------
 
 loadMoreBtnEl.addEventListener('click', handleLoadMoreBtnClick);
 searchFormEl.addEventListener('submit', handleSearchFormSubmit);
