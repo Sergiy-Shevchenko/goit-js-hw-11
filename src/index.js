@@ -2,10 +2,8 @@
 //----------------import-modules----------------------
 import createGallaryCards from './templates/gallery-card.hbs';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
-import axios from 'axios';
 
 import { JSONPlaceholderAPI } from './js/jsonlpaceholder-api';
-
 
 const searchFormEl = document.querySelector('.search-form');
 const searchInputEl = document.querySelector('input[type="text"]');
@@ -86,9 +84,12 @@ const handleSearchFormSubmit = async event => {
             return;
         }
 
+
         loadMoreBtnEl.classList.remove('is-hidden');
 
         searchInputEl.value ='';
+
+        console.log({data});
 
     } catch (err)  {
         console.log(err);
@@ -99,10 +100,13 @@ const handleLoadMoreBtnClick = async () => {
     jsonplaceholderApi.page += 1
 
     try {
-        const { data } = jsonplaceholderApi.fetchGallary()
-        gallaryListEl.insertAdjacentHTML('beforeend', createGallaryCards(data.hits))
-    } catch (err)  {
-        Notify.failure(`We're sorry, but you've reached the end of search results.`);
+        const { data } = await jsonplaceholderApi
+        .fetchGallary()
+
+        gallaryListEl.insertAdjacentHTML('beforeend', createGallaryCards(data.hits));
+        console.log({data})        
+    } catch (err)  {    
+        Notify.failure(`We're sorry, but you've reached the end of search results.`)    
         console.log(err);    
     }
 }
