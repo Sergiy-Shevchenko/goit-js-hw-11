@@ -60,7 +60,6 @@ const jsonplaceholderApi = new JSONPlaceholderAPI();
 //     })
 // }
 
-
 //------------------axios--------------------------
 const handleSearchFormSubmit = async event => {
     event.preventDefault();
@@ -70,10 +69,10 @@ const handleSearchFormSubmit = async event => {
     }
        
     jsonplaceholderApi.query =searchInputEl.value.trim();
-    
+    //console.log(data);
 
     try {
-       const { data } = await   jsonplaceholderApi
+       const { data } = await  jsonplaceholderApi
     .fetchGallary()
 
         if (data.totalHits === 0) {
@@ -81,8 +80,9 @@ const handleSearchFormSubmit = async event => {
         }
             gallaryListEl.innerHTML = createGallaryCards(data.hits);
 
-        if (data.totalHits === jsonplaceholderApi.page || data.totalHits === 0) {
+        if (data.totalHits < 40 || data.totalHits === 0) {
             loadMoreBtnEl.classList.add('is-hidden');
+            console.log({data});
             return;
         }
 
@@ -101,8 +101,8 @@ const handleLoadMoreBtnClick = async () => {
     try {
         const { data } = jsonplaceholderApi.fetchGallary()
         gallaryListEl.insertAdjacentHTML('beforeend', createGallaryCards(data.hits))
-
     } catch (err)  {
+        Notify.failure(`We're sorry, but you've reached the end of search results.`);
         console.log(err);    
     }
 }
