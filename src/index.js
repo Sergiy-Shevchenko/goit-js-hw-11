@@ -2,6 +2,8 @@
 //----------------import-modules----------------------
 import createGallaryCards from './templates/gallery-card.hbs';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import SimpleLightbox from 'simplelightbox';
+import "simplelightbox/dist/simple-lightbox.min.css";
 
 import { JSONPlaceholderAPI } from './js/jsonlpaceholder-api';
 
@@ -84,12 +86,14 @@ const handleSearchFormSubmit = async event => {
             return;
         }
 
-
         loadMoreBtnEl.classList.remove('is-hidden');
 
         searchInputEl.value ='';
 
         console.log({data});
+
+        lightbox.refresh();
+   
 
     } catch (err)  {
         console.log(err);
@@ -111,8 +115,17 @@ const handleLoadMoreBtnClick = async () => {
     }
 }
 
+const lightbox = new SimpleLightbox('.gallery a', {});
+
+function handleGallery(event) {
+    if (event.target.nodeName === 'IMG') {
+      lightbox.on('show.simplelightbox');
+    }
+  }
+
 //-----------------------------addEventListener-------------------
 
 loadMoreBtnEl.addEventListener('click', handleLoadMoreBtnClick);
 searchFormEl.addEventListener('submit', handleSearchFormSubmit);
+gallaryListEl.addEventListener('click', handleGallery);
 
